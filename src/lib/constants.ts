@@ -106,4 +106,14 @@ const roles: Role[] = [
   },
 ];
 
-export { ratios, roles };
+const sortedRoles: {[key: string]: Role[]} = roles
+.reduce((acc: {[key: string]: Role[]}, curr: Role) => {
+  if (acc[curr.team]) {
+    acc[curr.team] = [...acc[curr.team], curr];
+  } else {
+    acc[curr.team] = [curr];
+  }
+  return acc;
+}, {});
+
+export { ratios, sortedRoles };
