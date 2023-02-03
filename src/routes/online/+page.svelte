@@ -15,10 +15,11 @@
   let roleRatio: Ratio | undefined;
   let gameRoles: GameRoles | undefined;
   let assignments: Assignment[] = [];
-  let bluffs: Role[];
+  let bluffs: Role[] | undefined = [];
   $: playerCount = players.length;
   $: roleRatio = ratios.find(r => r.count === playerCount);
   $: isValidPlayer = !players.some((p: string) => p === newPlayer) && newPlayer.length !== 0;
+  $: bluffs = gameRoles?.bluffs;
 
   // Functions
   const addPlayer = () => {
@@ -41,7 +42,6 @@
         role: `${pickedRole.name}${pickedRole === gameRoles?.drunkRole ? ' (is drunk)' : ''}`
       };
     });
-    bluffs = gameRoles.bluffs;
   }
   const resetForm = () => {
     players = [];
@@ -98,7 +98,7 @@
         {/each}
       </ul>
     {/if}
-    {:else}
+  {:else}
     <ul>
       {#each assignments as a}
         <li>
@@ -106,6 +106,8 @@
         </li>
       {/each}
     </ul>
+  {/if}
+  {#if bluffs}
     <p>Demon Bluffs</p>
     <ul>
       {#each bluffs as b}
