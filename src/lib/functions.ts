@@ -15,12 +15,12 @@ const drawRoles = (team: 't' | 'o' | 'm' | 'd', num: number) => {
 };
 
 // Given a Ratio,
-// Returns a { roles: Role[], drunkRole: Role | null}
+// Returns a { roles: Role[], bluffs: Role[], drunkRole: Role | null}
 const generateRoles = (ratio: Ratio | undefined) => {
   if (typeof ratio === 'undefined') {
     return;
   }
-  let dRoles, mRoles, oRoles, tRoles: Role[];
+  let dRoles, mRoles, oRoles, tRoles, bluffs: Role[];
   let allRoles: Role[] = [];
   let tRoleTotal: number = ratio.t;
   let drunkRole: Role | null = null;
@@ -38,22 +38,25 @@ const generateRoles = (ratio: Ratio | undefined) => {
     oRoles.splice(oRoles.findIndex((r: Role) => r.name === 'drunk'), 1);
     tRoleTotal += 1;
   }
-  tRoles = drawRoles('t', tRoleTotal);
+  tRoles = drawRoles('t', tRoleTotal + 3); // + 3 demon role bluffs
   if (isDrunk) {
     drunkRole = tRoles.splice(0, 1)[0];
     allRoles = [...allRoles, drunkRole];
   }
+  bluffs = tRoles.splice(0, 3);
 
-  allRoles = [...allRoles,
+  allRoles = [
     ...dRoles,
     ...mRoles,
+    ...allRoles, // order drunk role after demons and minions
     ...oRoles,
     ...tRoles,
   ];
   
   return {
     roles: allRoles,
-    drunkRole: drunkRole,
+    bluffs,
+    drunkRole,
   };
 }
 
